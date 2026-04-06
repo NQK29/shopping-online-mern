@@ -1,0 +1,4 @@
+client-admin/node_modules
+client-customer/node_modules
+server/node_modules
+.env
