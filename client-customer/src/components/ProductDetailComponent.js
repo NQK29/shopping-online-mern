@@ -17,26 +17,30 @@ class ProductDetail extends Component {
   render() {
     const prod = this.state.product;
     if (prod != null) {
-      // KIỂM TRA TRẠNG THÁI KHO
       const isOutOfStock = prod.quantity <= 0;
 
       return (
-        <div className="bg-gray-50 min-h-screen py-12">
+        // Chuyển thẻ div ngoài cùng thành thẻ <main> để Google biết đây là nội dung chính của trang
+        <main className="bg-gray-50 min-h-screen py-12">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="mb-8">
-              <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight uppercase">
-                Chi tiết sản phẩm
-              </h2>
-              <div className="h-1 w-20 bg-blue-600 mt-2"></div>
-            </div>
+            
+            {/* Thanh điều hướng Breadcrumb - Cực kỳ ăn điểm trong môn SEO */}
+            <nav className="text-sm text-gray-500 mb-6 font-medium" aria-label="Breadcrumb">
+              <span className="hover:text-blue-600 cursor-pointer">Trang chủ</span> / {' '}
+              <span className="hover:text-blue-600 cursor-pointer">{prod.category.name}</span> / {' '}
+              <span className="text-gray-800">{prod.name}</span>
+            </nav>
 
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-gray-100">
+              
+              {/* VÙNG HIỂN THỊ HÌNH ẢNH */}
               <div className="md:w-1/2 p-8 bg-white flex items-center justify-center border-r border-gray-50">
                 <div className="relative group overflow-hidden rounded-xl">
                   <img
                     src={"data:image/jpg;base64," + prod.image}
                     className={`w-full h-auto max-h-[500px] object-contain transform group-hover:scale-105 transition-transform duration-500 ${isOutOfStock ? 'grayscale opacity-50' : ''}`}
-                    alt={prod.name}
+                    // Tối ưu ALT chứa từ khóa tự nhiên để SEO hình ảnh lên Google Images
+                    alt={`Hình ảnh sản phẩm ${prod.name} chính hãng tại KSHOP`}
                   />
                   {isOutOfStock && (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -46,12 +50,16 @@ class ProductDetail extends Component {
                 </div>
               </div>
 
+              {/* VÙNG THÔNG TIN CHI TIẾT */}
               <div className="md:w-1/2 p-10 flex flex-col justify-center">
-                <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full mb-4 self-start uppercase">
-                  {prod.category.name}
-                </span>
                 
-                <h1 className="text-3xl font-bold text-gray-800 mb-2 leading-tight">
+                {/* Đổi chữ "Chi tiết sản phẩm" thành thẻ p nhỏ để nhường vị trí ưu tiên cho tên sản phẩm */}
+                <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-1">
+                  Danh mục: {prod.category.name}
+                </p>
+                
+                {/* ĐƯỢC ĐẨY LÊN THÀNH TIÊU ĐỀ CHÍNH H1 - Google Bot sẽ tập trung quét từ khóa tại đây */}
+                <h1 className="text-3xl font-black text-gray-900 mb-2 leading-tight">
                   {prod.name}
                 </h1>
                 
@@ -64,15 +72,22 @@ class ProductDetail extends Component {
                   <span className="ml-1 text-xl font-bold text-blue-600 underline">đ</span>
                 </div>
 
-                {/* HIỂN THỊ SỐ LƯỢNG TỒN KHO - SỬA Ở ĐÂY */}
-                <div className="flex items-center space-x-2 mb-8 animate-pulse">
+                <div className="flex items-center space-x-2 mb-8">
                   <div className={`w-3 h-3 rounded-full ${!isOutOfStock ? 'bg-green-500' : 'bg-red-500'}`}></div>
                   <p className={`text-sm font-bold ${!isOutOfStock ? 'text-green-600' : 'text-red-600'}`}>
-                    {!isOutOfStock ? `Còn lại: ${prod.quantity} sản phẩm` : "Hiện tại đã hết hàng"}
+                    {!isOutOfStock ? `Tình trạng: Còn hàng (${prod.quantity} sản phẩm)` : "Tình trạng: Tạm thời hết hàng"}
                   </p>
                 </div>
 
                 <hr className="mb-8 border-gray-100" />
+
+                {/* Phần mô tả sản phẩm bổ sung - Rất cần thiết cho SEO để chứa text keyword */}
+                <div className="mb-6">
+                  <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Đặc điểm nổi bật:</h2>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Sản phẩm {prod.name} sở hữu thiết kế hiện đại, cấu hình mạnh mẽ đáp ứng tối đa nhu cầu của người dùng. Cam kết phân phối chính hãng độc quyền tại hệ thống cửa hàng KSHOP.
+                  </p>
+                </div>
 
                 <form className="space-y-6">
                   <div>
@@ -83,23 +98,19 @@ class ProductDetail extends Component {
                       <input
                         type="number"
                         min="1"
-                        max={prod.quantity} // Giới hạn tối đa bằng tồn kho
+                        max={prod.quantity}
                         disabled={isOutOfStock}
                         className={`w-24 bg-gray-50 border border-gray-200 rounded-lg py-3 px-4 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none font-bold text-center transition-all ${isOutOfStock ? 'cursor-not-allowed opacity-50' : ''}`}
                         value={this.state.txtQuantity}
                         onChange={(e) => this.setState({ txtQuantity: e.target.value })}
                       />
-                      <span className="text-gray-400 text-xs italic">
-                        {isOutOfStock ? "Vui lòng quay lại sau" : "Nhập số lượng bạn muốn"}
-                      </span>
                     </div>
                   </div>
 
-                  {/* NÚT MUA HÀNG - SỬA LOGIC Ở ĐÂY */}
                   <button
                     type="submit"
                     disabled={isOutOfStock}
-                    className={`w-full font-bold py-4 px-8 rounded-xl flex items-center justify-center space-x-3 transition-all transform active:scale-95 shadow-lg shadow-blue-200 ${
+                    className={`w-full font-bold py-4 px-8 rounded-xl flex items-center justify-center space-x-3 transition-all transform active:scale-95 shadow-lg ${
                       !isOutOfStock 
                       ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-200 cursor-pointer' 
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'
@@ -118,24 +129,13 @@ class ProductDetail extends Component {
                     )}
                   </button>
                 </form>
-
-                <div className="mt-8 grid grid-cols-2 gap-4">
-                    <div className="flex items-center space-x-2 text-xs text-gray-500 font-medium">
-                        <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                        <span>Chính hãng 100%</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-xs text-gray-500 font-medium">
-                        <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                        <span>Đổi trả miễn phí</span>
-                    </div>
-                </div>
               </div>
             </div>
           </div>
-        </div>
+        </main>
       );
     }
-    return <div className="flex justify-center items-center h-screen text-gray-400">Đang tải sản phẩm...</div>;
+    return <div className="flex justify-center items-center h-screen text-gray-400">Đang tải thông tin sản phẩm...</div>;
   }
 
   componentDidMount() {
