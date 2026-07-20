@@ -1,3 +1,19 @@
-# https://www.robotstxt.org/robotstxt.html
+# Cho phép tất cả các loại Bot (Google, Bing, Yahoo...) vào cào dữ liệu
 User-agent: *
-Disallow:
+Allow: /
+Allow: /home
+Allow: /product/
+Allow: /product/category/
+Allow: /product/search/
+
+# Chặn Bot vào các trang riêng tư, trang Admin hoặc Giỏ hàng để bảo mật và đỡ tốn tài nguyên
+Disallow: /mycart
+Disallow: /myprofile
+Disallow: /myorders
+Disallow: /login
+Disallow: /signup
+Disallow: /active
+Disallow: /admin/
+
+# Chỉ đường cho Bot tìm đến file Bản đồ trang web (Thay tên miền khi bạn deploy thật)
+Sitemap: http://localhost:3001/sitemap.xml

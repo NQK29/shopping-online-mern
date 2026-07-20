@@ -28,12 +28,13 @@ class Order extends Component {
     }
 
     render() {
+
         const orders = this.state.orders.map((item) => {
             const isSelected = this.state.order?._id === item._id;
             return (
-                <tr 
-                    key={item._id} 
-                    className={`border-b border-gray-100 transition-colors cursor-pointer ${isSelected ? 'bg-indigo-50' : 'hover:bg-gray-50'}`} 
+                <tr
+                    key={item._id}
+                    className={`border-b border-gray-100 transition-colors cursor-pointer ${isSelected ? 'bg-indigo-50' : 'hover:bg-gray-50'}`}
                     onClick={() => this.trItemClick(item)}
                 >
                     <td className="py-4 px-4 font-mono text-xs text-gray-500">{item._id}</td>
@@ -45,13 +46,13 @@ class Order extends Component {
                     <td className="py-4 px-4 text-center">
                         {item.status === 'PENDING' && (
                             <div className="flex justify-center space-x-2">
-                                <button 
+                                <button
                                     className="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all active:scale-95"
                                     onClick={(e) => { e.stopPropagation(); this.lnkApproveClick(item._id); }}
                                 >
                                     DUYỆT
                                 </button>
-                                <button 
+                                <button
                                     className="bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all active:scale-95"
                                     onClick={(e) => { e.stopPropagation(); this.lnkCancelClick(item._id); }}
                                 >
@@ -97,7 +98,7 @@ class Order extends Component {
                     <div className="bg-white rounded-2xl shadow-xl border-2 border-indigo-500 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
                         <div className="p-4 bg-indigo-500 text-white flex justify-between items-center">
                             <h2 className="font-bold tracking-tight">CHI TIẾT ĐƠN HÀNG #{this.state.order._id.slice(-6).toUpperCase()}</h2>
-                            <button onClick={() => this.setState({order: null})} className="p-1 hover:bg-white/20 rounded-full transition-colors">
+                            <button onClick={() => this.setState({ order: null })} className="p-1 hover:bg-white/20 rounded-full transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                                 </svg>

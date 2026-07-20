@@ -5,11 +5,16 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.3",
+<<<<<<< HEAD
     "nodemailer": "^6.9.5",
     "slugify": "^1.6.9"
+=======
+    "nodemailer": "^6.9.5"
+>>>>>>> 38d823e07c166169e21a1640e8edd9b8fb0436fe
   },
   "scripts": {
     "build": "(npm install) && (cd ../client-admin && npm install && npm run build) && (cd ../client-customer && npm install && npm run build)",
     "start": "node index.js"
   }
+  
 }

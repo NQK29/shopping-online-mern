@@ -58,8 +58,8 @@ class Product extends Component {
         <button
           key={index}
           className={`mx-1 w-8 h-8 rounded-lg text-xs font-bold transition-all ${isActive
-              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200'
-              : 'bg-white text-gray-500 hover:bg-gray-100 border border-gray-200'
+            ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200'
+            : 'bg-white text-gray-500 hover:bg-gray-100 border border-gray-200'
             }`}
           onClick={() => this.lnkPageClick(pageNum)}
         >

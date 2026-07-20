@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { Component } from "react";
-import withRouter from "../utils/withRouter"; // Đảm bảo bạn đã import withRouter để navigate sau khi xong
+import withRouter from "../utils/withRouter"; 
 
 class Active extends Component {
   constructor(props) {

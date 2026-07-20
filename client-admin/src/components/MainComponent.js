@@ -11,6 +11,7 @@ import Order from './OrderComponent';
 import Customer from './CustomerComponent';
 import AdminHeader from './AdminHeader'; // Import Header mới
 import AdminFooter from './AdminFooter'; // Import Footer mới
+import Blog from './BlogComponent'; 
 
 class Main extends Component {
   static contextType = MyContext;
@@ -40,6 +41,7 @@ class Main extends Component {
                   <Route path='/admin/product' element={<Product />} />
                   <Route path='/admin/order' element={<Order />} />
                   <Route path='/admin/customer' element={<Customer />} />
+                  <Route path='/admin/blog' element={<Blog />} />
                 </Routes>
               </div>
             </main>

@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { Component } from 'react';
 import withRouter from '../utils/withRouter';
 import MyContext from '../contexts/MyContext';
+import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 
 class ProductDetail extends Component {
   static contextType = MyContext;
@@ -19,27 +21,55 @@ class ProductDetail extends Component {
     if (prod != null) {
       const isOutOfStock = prod.quantity <= 0;
 
+      // Định nghĩa giá tiền định dạng chữ để chèn vào Meta Description cho hấp dẫn
+      const formattedPrice = prod.price.toLocaleString();
+
       return (
-        // Chuyển thẻ div ngoài cùng thành thẻ <main> để Google biết đây là nội dung chính của trang
         <main className="bg-gray-50 min-h-screen py-12">
+          {/* 🎯 CẤU HÌNH THẺ META ĐỘNG (DYNAMIC META TAGS CHUẨN SEO ON-PAGE) */}
+          <Helmet>
+            <title>{`${prod.name} Chính Hãng, Giá Tốt Nhất | KSHOP`}</title>
+            <meta
+              name="description"
+              content={`Mua ngay sản phẩm ${prod.name} thuộc danh mục ${prod.category.name} chính hãng với giá chỉ ${formattedPrice}đ. Số lượng có hạn tại hệ thống KSHOP, ưu đãi tốt nhất hôm nay!`}
+            />
+            <meta name="keywords" content={`${prod.name}, ${prod.name} gia re, mua ${prod.name}, kshop`} />
+
+            {/* Thẻ Open Graph giúp tối ưu hiển thị khi chia sẻ link lên Facebook, Zalo */}
+            <meta property="og:title" content={`${prod.name} Chính Hãng, Giá Tốt Nhất | KSHOP`} />
+            <meta property="og:description" content={`Mua ngay sản phẩm ${prod.name} chính hãng với giá chỉ ${formattedPrice}đ tại KSHOP.`} />
+            <meta property="og:type" content="product" />
+          </Helmet>
+
           <div className="max-w-5xl mx-auto px-4">
-            
-            {/* Thanh điều hướng Breadcrumb - Cực kỳ ăn điểm trong môn SEO */}
+
+            {/* Thanh điều hướng Breadcrumb */}
             <nav className="text-sm text-gray-500 mb-6 font-medium" aria-label="Breadcrumb">
-              <span className="hover:text-blue-600 cursor-pointer">Trang chủ</span> / {' '}
-              <span className="hover:text-blue-600 cursor-pointer">{prod.category.name}</span> / {' '}
-              <span className="text-gray-800">{prod.name}</span>
+              <Link to="/home" className="hover:text-blue-600 transition-colors">Trang chủ</Link> / {' '}
+
+              <Link
+                to={`/product/category/${prod.category.slug}`}
+                className="hover:text-blue-600 transition-colors"
+              >
+                {prod.category.name}
+              </Link> / {' '}
+
+              <Link
+                to={`/product/${prod.slug}`}
+                className="text-gray-800 font-semibold hover:text-blue-600 transition-colors"
+              >
+                {prod.name}
+              </Link>
             </nav>
 
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-gray-100">
-              
+
               {/* VÙNG HIỂN THỊ HÌNH ẢNH */}
               <div className="md:w-1/2 p-8 bg-white flex items-center justify-center border-r border-gray-50">
                 <div className="relative group overflow-hidden rounded-xl">
                   <img
                     src={"data:image/jpg;base64," + prod.image}
                     className={`w-full h-auto max-h-[500px] object-contain transform group-hover:scale-105 transition-transform duration-500 ${isOutOfStock ? 'grayscale opacity-50' : ''}`}
-                    // Tối ưu ALT chứa từ khóa tự nhiên để SEO hình ảnh lên Google Images
                     alt={`Hình ảnh sản phẩm ${prod.name} chính hãng tại KSHOP`}
                   />
                   {isOutOfStock && (
@@ -52,17 +82,16 @@ class ProductDetail extends Component {
 
               {/* VÙNG THÔNG TIN CHI TIẾT */}
               <div className="md:w-1/2 p-10 flex flex-col justify-center">
-                
-                {/* Đổi chữ "Chi tiết sản phẩm" thành thẻ p nhỏ để nhường vị trí ưu tiên cho tên sản phẩm */}
+
                 <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-1">
                   Danh mục: {prod.category.name}
                 </p>
-                
-                {/* ĐƯỢC ĐẨY LÊN THÀNH TIÊU ĐỀ CHÍNH H1 - Google Bot sẽ tập trung quét từ khóa tại đây */}
+
+                {/* TIÊU ĐỀ CHÍNH H1 */}
                 <h1 className="text-3xl font-black text-gray-900 mb-2 leading-tight">
                   {prod.name}
                 </h1>
-                
+
                 <p className="text-sm text-gray-400 mb-6 font-mono">Mã sản phẩm: {prod._id}</p>
 
                 <div className="flex items-baseline mb-4">
@@ -81,7 +110,7 @@ class ProductDetail extends Component {
 
                 <hr className="mb-8 border-gray-100" />
 
-                {/* Phần mô tả sản phẩm bổ sung - Rất cần thiết cho SEO để chứa text keyword */}
+                {/* Phần mô tả sản phẩm bổ sung */}
                 <div className="mb-6">
                   <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-2">Đặc điểm nổi bật:</h2>
                   <p className="text-sm text-gray-600 leading-relaxed">
@@ -107,28 +136,60 @@ class ProductDetail extends Component {
                     </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={isOutOfStock}
-                    className={`w-full font-bold py-4 px-8 rounded-xl flex items-center justify-center space-x-3 transition-all transform active:scale-95 shadow-lg ${
-                      !isOutOfStock 
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-200 cursor-pointer' 
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'
-                    }`}
-                    onClick={(e) => this.btnAdd2CartClick(e)}
-                  >
-                    {!isOutOfStock ? (
-                      <>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                        </svg>
-                        <span>THÊM VÀO GIỎ HÀNG</span>
-                      </>
-                    ) : (
-                      <span>HẾT HÀNG</span>
-                    )}
-                  </button>
+                  {/* 🎯 HỆ THỐNG CẶP NÚT BÁN HÀNG TỐI ƯU UX CONVERSION */}
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    {/* NÚT 1: MUA NGAY SIÊU TỐC */}
+                    <button
+                      disabled={isOutOfStock}
+                      className={`flex-[2] font-bold py-4 px-6 rounded-xl flex items-center justify-center space-x-2 transition-all transform active:scale-95 shadow-lg ${
+                        !isOutOfStock
+                          ? 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-orange-100 cursor-pointer'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'
+                      }`}
+                      onClick={(e) => this.btnBuyNowClick(e)}
+                    >
+                      <span>⚡ MUA NGAY CHÍNH HÃNG</span>
+                    </button>
+
+                    {/* NÚT 2: THÊM VÀO GIỎ TRƯỚC */}
+                    <button
+                      type="submit"
+                      disabled={isOutOfStock}
+                      className={`flex-1 font-bold py-4 px-6 rounded-xl flex items-center justify-center space-x-2 transition-all transform active:scale-95 shadow-lg ${
+                        !isOutOfStock
+                          ? 'bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 cursor-pointer'
+                          : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+                      }`}
+                      onClick={(e) => this.btnAdd2CartClick(e)}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                      <span>THÊM VÀO GIỎ</span>
+                    </button>
+                  </div>
                 </form>
+
+                {/* 🔥 KHỐI CTA CAM KẾT CHẤT LƯỢNG TĂNG ĐỘ UY TÍN (TRUST BADGES CHUẨN ĐỒ ÁN) */}
+                <div className="mt-6 grid grid-cols-2 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg">🛡️</span>
+                    <span className="text-xs font-bold text-slate-700">Bảo hành 12 tháng chính hãng</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg">🚚</span>
+                    <span className="text-xs font-bold text-slate-700">Miễn phí vận chuyển toàn quốc</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg">🔄</span>
+                    <span className="text-xs font-bold text-slate-700">Lỗi là đổi mới trong 30 ngày</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg">💳</span>
+                    <span className="text-xs font-bold text-slate-700">Hỗ trợ trả góp 0% thủ tục nhanh</span>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -140,24 +201,29 @@ class ProductDetail extends Component {
 
   componentDidMount() {
     const params = this.props.params;
-    this.apiGetProduct(params.id);
+    this.apiGetProduct(params.slug);
   }
 
-  apiGetProduct(id) {
-    axios.get('/api/customer/products/' + id).then((res) => {
+  apiGetProduct(slug) {
+    axios.get('/api/customer/products/' + slug).then((res) => {
       this.setState({ product: res.data });
+
+      if (res.data) {
+        const prod = res.data;
+        window.document.title = `${prod.name} Chính Hãng - ${prod.price.toLocaleString()}đ | KSHOP`;
+      }
     });
   }
 
-  btnAdd2CartClick(e) {
+  // ⚡ HÀM XỬ LÝ MUA NGAY ĐI THẲNG ĐẾN TRANG GIỎ HÀNG KÈM SỐ LƯỢNG ĐỘNG
+  btnBuyNowClick(e) {
     e.preventDefault();
     const product = this.state.product;
     const quantityBought = parseInt(this.state.txtQuantity);
 
-    // KIỂM TRA LẠI MỘT LẦN NỮA VỀ SỐ LƯỢNG KHO
     if (quantityBought > product.quantity) {
-        alert(`Rất tiếc! Bạn chỉ có thể mua tối đa ${product.quantity} sản phẩm này.`);
-        return;
+      alert(`Rất tiếc! Bạn chỉ có thể mua tối đa ${product.quantity} sản phẩm này.`);
+      return;
     }
 
     if (quantityBought && quantityBought > 0) {
@@ -167,10 +233,40 @@ class ProductDetail extends Component {
       if (index === -1) {
         mycart.push({ product: product, quantity: quantityBought });
       } else {
-        // Kiểm tra xem tổng giỏ hàng + số lượng mới có vượt quá kho không
         if (mycart[index].quantity + quantityBought > product.quantity) {
-            alert('Số lượng trong giỏ hàng đã đạt mức tối đa hiện có trong kho!');
-            return;
+          alert('Số lượng hàng trong kho không đủ để thêm tiếp!');
+          return;
+        }
+        mycart[index].quantity += quantityBought;
+      }
+
+      this.context.setMycart(mycart);
+      this.props.navigate('/mycart'); // 🚀 Điều hướng trực diện sang trang thanh toán giỏ hàng
+    } else {
+      alert('Vui lòng nhập số lượng hợp lệ');
+    }
+  }
+
+  btnAdd2CartClick(e) {
+    e.preventDefault();
+    const product = this.state.product;
+    const quantityBought = parseInt(this.state.txtQuantity);
+
+    if (quantityBought > product.quantity) {
+      alert(`Rất tiếc! Bạn chỉ có thể mua tối đa ${product.quantity} sản phẩm này.`);
+      return;
+    }
+
+    if (quantityBought && quantityBought > 0) {
+      const mycart = this.context.mycart;
+      const index = mycart.findIndex(x => x.product._id === product._id);
+
+      if (index === -1) {
+        mycart.push({ product: product, quantity: quantityBought });
+      } else {
+        if (mycart[index].quantity + quantityBought > product.quantity) {
+          alert('Số lượng trong giỏ hàng đã đạt mức tối đa hiện có trong kho!');
+          return;
         }
         mycart[index].quantity += quantityBought;
       }

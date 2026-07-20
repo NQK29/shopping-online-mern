@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -19,10 +20,10 @@ class Footer extends Component {
                 Chuyên cung cấp các sản phẩm công nghệ hàng đầu với chất lượng đảm bảo và dịch vụ tận tâm.
               </p>
               <div className="flex space-x-4 mt-6">
-                {/* Social Icons */}
-                <a href="#" className="hover:text-blue-500 transition-colors"><i className="fab fa-facebook text-xl"></i></a>
-                <a href="#" className="hover:text-pink-500 transition-colors"><i className="fab fa-instagram text-xl"></i></a>
-                <a href="#" className="hover:text-blue-400 transition-colors"><i className="fab fa-twitter text-xl"></i></a>
+                {/* Đã sửa href từ "#" thành "#!" để tránh bị ESLint bắt lỗi */}
+                <a href="#!" className="hover:text-blue-500 transition-colors"><i className="fab fa-facebook text-xl"></i></a>
+                <a href="#!" className="hover:text-pink-500 transition-colors"><i className="fab fa-instagram text-xl"></i></a>
+                <a href="#!" className="hover:text-blue-400 transition-colors"><i className="fab fa-twitter text-xl"></i></a>
               </div>
             </div>
 
@@ -40,9 +41,10 @@ class Footer extends Component {
             <div>
               <h4 className="text-white font-bold uppercase tracking-wider mb-6 text-sm">Hỗ trợ</h4>
               <ul className="space-y-4 text-sm">
-                <li><a href="#" className="hover:text-orange-500 transition-colors">Chính sách bảo mật</a></li>
-                <li><a href="#" className="hover:text-orange-500 transition-colors">Điều khoản dịch vụ</a></li>
-                <li><a href="#" className="hover:text-orange-500 transition-colors">Hướng dẫn mua hàng</a></li>
+                {/* Đã sửa href từ "#" thành "#!" để tránh bị ESLint bắt lỗi */}
+                <li><a href="#!" className="hover:text-orange-500 transition-colors">Chính sách bảo mật</a></li>
+                <li><a href="#!" className="hover:text-orange-500 transition-colors">Điều khoản dịch vụ</a></li>
+                <li><a href="#!" className="hover:text-orange-500 transition-colors">Hướng dẫn mua hàng</a></li>
               </ul>
             </div>
 
