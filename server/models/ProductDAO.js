@@ -31,6 +31,12 @@ const ProductDAO = {
     const product = await Models.Product.findById(_id).exec();
     return product;
   },
+  
+  // HÀM MỚI CHUẨN SEO: Lấy chi tiết sản phẩm bằng chuỗi Slug không dấu
+  async selectBySlug(slug) {
+    const product = await Models.Product.findOne({ slug: slug }).exec();
+    return product;
+  },
 
   // Cập nhật thông tin sản phẩm (Bao gồm số lượng quantity)
   async update(product) {
@@ -85,6 +91,17 @@ const ProductDAO = {
   // Lấy sản phẩm theo danh mục
   async selectByCatID(_cid) {
     const query = { 'category._id': _cid };
+    const products = await Models.Product.find(query).exec();
+    return products;
+  },
+
+  async selectByCatSlug(catSlug) {
+    // Tìm ID của danh mục dựa trên slug chữ không dấu
+    const category = await Models.Category.findOne({ slug: catSlug }).exec();
+    if (!category) return [];
+
+    // Trả về danh sách sản phẩm thuộc ID danh mục đó
+    const query = { 'category._id': category._id };
     const products = await Models.Product.find(query).exec();
     return products;
   },
