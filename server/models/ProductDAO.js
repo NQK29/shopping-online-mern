@@ -31,7 +31,7 @@ const ProductDAO = {
     const product = await Models.Product.findById(_id).exec();
     return product;
   },
-  
+
   // HÀM MỚI CHUẨN SEO: Lấy chi tiết sản phẩm bằng chuỗi Slug không dấu
   async selectBySlug(slug) {
     const product = await Models.Product.findOne({ slug: slug }).exec();
@@ -57,7 +57,7 @@ const ProductDAO = {
   },
 
   // Xóa sản phẩm
-  async delete(_id) {  
+  async delete(_id) {
     const result = await Models.Product.findByIdAndDelete(_id);
     return result;
   },
@@ -65,7 +65,7 @@ const ProductDAO = {
   // Lấy các sản phẩm mới nhất
   async selectTopNew(top) {
     const query = {};
-    const mysort = { cdate: -1 }; 
+    const mysort = { cdate: -1 };
     const products = await Models.Product.find(query).sort(mysort).limit(top).exec();
     return products;
   },
@@ -82,7 +82,7 @@ const ProductDAO = {
 
     var products = [];
     for (const item of items) {
-      const product = await this.selectByID(item._id); // Dùng this để gọi hàm trong cùng object
+      const product = await this.selectByID(item._id);
       if (product) products.push(product);
     }
     return products;
@@ -105,7 +105,7 @@ const ProductDAO = {
     const products = await Models.Product.find(query).exec();
     return products;
   },
-  
+
   // Tìm kiếm sản phẩm theo từ khóa
   async selectByKeyword(keyword) {
     const query = { name: { $regex: new RegExp(keyword, 'i') } };

@@ -1,8 +1,58 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
+import axios from 'axios';
 import home_img from '../asset/imgs/home_img.jpg';
+import MyContext from '../contexts/MyContext';
 
 class Home extends Component {
+  static contextType = MyContext;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      stats: {
+        totalRevenue: 0,
+        newOrders: 0,
+        totalCustomers: 0,
+        totalProducts: 0
+      }
+    };
+    this.timer = null; // Biến lưu bộ đếm thời gian auto-refresh
+  }
+
+  componentDidMount() {
+    // 1. Tải số liệu ngay khi vào trang
+    this.apiGetStatistics();
+
+    // 2. Chạy ngầm tự động lấy số liệu mới mỗi 10 giây (10000ms)
+    this.timer = setInterval(() => {
+      this.apiGetStatistics();
+    }, 10000);
+  }
+
+  componentWillUnmount() {
+    // Xóa timer khi người dùng rời khỏi trang Home để tránh lag máy
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+  }
+
+  // ⚡ HÀM GỌI API LẤY SỐ LIỆU LIVE TỪ BACKEND
+  apiGetStatistics() {
+    const config = { headers: { 'x-access-token': this.context.token } };
+    axios.get('/api/admin/statistics', config)
+      .then((res) => {
+        if (res.data) {
+          this.setState({ stats: res.data });
+        }
+      })
+      .catch((err) => {
+        console.error("Lỗi khi tải thống kê live:", err);
+      });
+  }
+
   render() {
+    const { totalRevenue, newOrders, totalCustomers, totalProducts } = this.state.stats;
+
     return (
       <div className="bg-slate-50 min-h-screen p-8">
         {/* TIÊU ĐỀ CHÍNH */}
@@ -18,15 +68,39 @@ class Home extends Component {
           </div>
         </div>
 
-        {/* CÁC THẺ THỐNG KÊ (Dùng giả lập số liệu cho chuyên nghiệp) */}
+        {/* CÁC THẺ THỐNG KÊ LIVE (Nối trực tiếp từ Database) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          {this.renderStatCard("Tổng Doanh Thu", "45,000,000 đ", "📈 +12% tháng này", "text-emerald-600", "bg-emerald-50")}
-          {this.renderStatCard("Đơn Hàng Mới", "10", "🔥 Đang chờ duyệt", "text-amber-600", "bg-amber-50")}
-          {this.renderStatCard("Khách Hàng", "50", "👤 Hoạt động", "text-blue-600", "bg-blue-50")}
-          {this.renderStatCard("Sản Phẩm", "20", "📦 Kho hàng", "text-purple-600", "bg-purple-50")}
+          {this.renderStatCard(
+            "Tổng Doanh Thu", 
+            `${(totalRevenue || 0).toLocaleString()} đ`, 
+            "📈 Live từ đơn APPROVED", 
+            "text-emerald-600", 
+            "bg-emerald-50"
+          )}
+          {this.renderStatCard(
+            "Đơn Hàng Mới", 
+            newOrders || 0, 
+            "🔥 Đang chờ duyệt", 
+            "text-amber-600", 
+            "bg-amber-50"
+          )}
+          {this.renderStatCard(
+            "Khách Hàng", 
+            totalCustomers || 0, 
+            "👤 Hoạt động", 
+            "text-blue-600", 
+            "bg-blue-50"
+          )}
+          {this.renderStatCard(
+            "Sản Phẩm", 
+            totalProducts || 0, 
+            "📦 Kho hàng", 
+            "text-purple-600", 
+            "bg-purple-50"
+          )}
         </div>
 
-        {/* HÌNH ẢNH MINH HỌA (Giữ lại ảnh của bạn nhưng làm cho nó tinh tế hơn) */}
+        {/* HÌNH ẢNH MINH HỌA */}
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
           <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center">
              <span className="w-1.5 h-6 bg-indigo-600 rounded-full mr-3"></span>
@@ -46,7 +120,7 @@ class Home extends Component {
     );
   }
 
-  // Hàm phụ để tạo thẻ thống kê nhanh
+  // Hàm phụ để tạo thẻ thống kê
   renderStatCard(title, value, subtext, textColor, bgColor) {
     return (
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">

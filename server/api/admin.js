@@ -238,4 +238,13 @@ router.delete('/blogs/:id', JwtUtil.checkToken, async function (req, res) {
   res.json(result);
 });
 
+router.get('/statistics', JwtUtil.checkToken, async function (req, res) {
+  try {
+    const stats = await AdminDAO.getDashboardStats();
+    res.json(stats);
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi lấy dữ liệu thống kê', error: error.message });
+  }
+});
+
 module.exports = router;
