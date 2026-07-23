@@ -15,5 +15,4 @@ Disallow: /signup
 Disallow: /active
 Disallow: /admin/
 
-# Chỉ đường cho Bot tìm đến file Bản đồ trang web (Thay tên miền khi bạn deploy thật)
 Sitemap: https://kshop-u0k0.onrender.com/sitemap.xml
